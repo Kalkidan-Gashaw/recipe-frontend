@@ -1,7 +1,21 @@
 import React, { useState } from "react";
+import CreatableSelect from "react-select/creatable";
+import "./RecipeGenerator.css"; // We'll create this file for custom styles
+
+const countries = [
+  { value: "Ethiopia", label: "Ethiopia" },
+  { value: "Italy", label: "Italy" },
+  { value: "Japan", label: "Japan" },
+  { value: "India", label: "India" },
+  { value: "Mexico", label: "Mexico" },
+  { value: "France", label: "France" },
+  { value: "China", label: "China" },
+  // Users can add more by typing
+];
 
 const RecipeGenerator = () => {
   const [ingredients, setIngredients] = useState("");
+  const [country, setCountry] = useState("");
   const [recipe, setRecipe] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -10,13 +24,17 @@ const RecipeGenerator = () => {
       alert("Please enter some ingredients.");
       return;
     }
+    if (!country.trim()) {
+      alert("Please select or enter a country.");
+      return;
+    }
 
     setLoading(true);
     try {
       const response = await fetch("http://localhost:8000/generate-recipe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ingredients }),
+        body: JSON.stringify({ ingredients, country }),
       });
 
       const data = await response.json();
@@ -30,65 +48,83 @@ const RecipeGenerator = () => {
       console.error("Request failed:", error);
       setRecipe("Error: Unable to connect to the server.");
     }
-
     setLoading(false);
   };
 
   return (
-    <div
-      style={{
-        padding: "2rem",
-        maxWidth: "600px",
-        margin: "auto",
-        fontFamily: "Arial, sans-serif",
-      }}
-    >
-      <h1>AI Recipe Generator</h1>
+    <div className="container">
+      <div className="top">
+        <h1>🌍 AI Recipe Generator</h1>
 
-      <textarea
-        rows={4}
-        value={ingredients}
-        onChange={(e) => setIngredients(e.target.value)}
-        placeholder="Enter ingredients separated by commas (e.g., chicken, rice, broccoli)"
-        style={{
-          width: "100%",
-          padding: "0.75rem",
-          marginBottom: "1rem",
-          borderRadius: "0.5rem",
-          border: "1px solid #ccc",
-          fontSize: "1rem",
-        }}
-      />
-
-      <button
-        onClick={generateRecipe}
-        disabled={loading}
-        style={{
-          padding: "0.75rem 1.5rem",
-          backgroundColor: "#007bff",
-          color: "#fff",
-          border: "none",
-          borderRadius: "0.5rem",
-          cursor: "pointer",
-          fontSize: "1rem",
-        }}
-      >
-        {loading ? "Generating..." : "Generate Recipe"}
-      </button>
-
-      <div style={{ marginTop: "2rem" }}>
-        <h2>Generated Recipe</h2>
-        <pre
-          style={{
-            whiteSpace: "pre-wrap",
-            background: "#f8f8f8",
-            padding: "1rem",
-            borderRadius: "0.5rem",
+        <CreatableSelect
+          className="in"
+          options={countries}
+          onChange={(selected) => setCountry(selected ? selected.value : "")}
+          placeholder="Start typing a country..."
+          isClearable
+          styles={{
+            control: (base) => ({
+              ...base,
+              borderRadius: "0.5rem",
+              borderColor: "#ccc",
+              fontSize: "1rem",
+              padding: "2px",
+              backgroundColor: " #494848",
+            }),
           }}
+        />
+
+        <textarea
+          rows={4}
+          value={ingredients}
+          onChange={(e) => setIngredients(e.target.value)}
+          placeholder="Enter ingredients separated by commas (e.g., chicken, rice, broccoli)"
+          className="in"
+        />
+
+        <button
+          onClick={generateRecipe}
+          disabled={loading}
+          className="neutral-btn"
         >
-          {recipe || "Your recipe will appear here."}
-        </pre>
+          {loading ? "Generating..." : "Generate Recipe"}
+        </button>
       </div>
+
+      {recipe && (
+        <div className="recipe-card">
+          <h2>🍽️ Your Recipe</h2>
+          <div className="recipe-content">
+            <div className="recipe-column">
+              <h3>🧂 Ingredients</h3>
+              <div
+                className="ingredients"
+                dangerouslySetInnerHTML={{
+                  __html:
+                    recipe
+                      .split(/Instructions:|Steps:/i)[0]
+                      .replace(/Ingredients:/i, "")
+                      .replace(/\n/g, "<br />")
+                      .trim() || "<em>No ingredients found.</em>",
+                }}
+              />
+            </div>
+            <div className="recipe-column">
+              <h3>👨‍🍳 Instructions</h3>
+              <div
+                className="instructions"
+                dangerouslySetInnerHTML={{
+                  __html:
+                    recipe
+                      .split(/Instructions:|Steps:/i)[1]
+                      ?.replace(/\n/g, "<br />")
+                      .trim() || "<em>No instructions found.</em>",
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
