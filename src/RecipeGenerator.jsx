@@ -58,6 +58,7 @@ const RecipeGenerator = () => {
 
         <CreatableSelect
           className="in"
+          classNamePrefix="in"
           options={countries}
           onChange={(selected) => setCountry(selected ? selected.value : "")}
           placeholder="Start typing a country..."
@@ -79,7 +80,7 @@ const RecipeGenerator = () => {
           value={ingredients}
           onChange={(e) => setIngredients(e.target.value)}
           placeholder="Enter ingredients separated by commas (e.g., chicken, rice, broccoli)"
-          className="in"
+          className="custom-textarea"
         />
 
         <button

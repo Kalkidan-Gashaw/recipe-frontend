@@ -29,6 +29,58 @@ body {
   color: white;
   text-align: center;
 }
+/* App.css */
+
+.in__control {
+  background-color: #494848 !important;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  color: #d3d3d3 !important;
+}
+
+.in__single-value {
+  color: #d3d3d3 !important;
+}
+
+.in__input-container {
+  color: #d3d3d3 !important;
+}
+
+.in__placeholder {
+  color: #bfbfbf !important;
+}
+
+.in__menu {
+  background-color: #494848 !important;
+}
+
+.in__option {
+  color: #d3d3d3 !important;
+  background-color: #494848 !important;
+}
+
+.in__option--is-focused {
+  background-color: #5a5a5a !important;
+}
+/* App.css */
+
+.custom-textarea {
+  width: 60%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  background-color: #494848; /* dark gray background */
+  color: #d3d3d3; /* light gray text */
+  resize: vertical; /* allows resizing vertically only */
+}
+
+.custom-textarea::placeholder {
+  color: #bfbfbf; /* light gray placeholder */
+}
+
 .neutral-btn {
   background-color: black; /* neutral dark */
   color: white;
@@ -41,7 +93,7 @@ body {
 }
 
 .neutral-btn:hover {
-  background-color: #333;
+  background-color: #1b1919;
 }
 
 .recipe-card {
